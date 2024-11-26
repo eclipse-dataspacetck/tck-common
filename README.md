@@ -1,2 +1,3 @@
-# tck-common
-Shared code for all Technology Compatibility Kits and other projects
+# Technology Compatibility Kit Commons
+
+Shared code that is used by the Technology Compatibility Kits and the build plugins alike.

@@ -1,0 +1,64 @@
+#
+#  Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+#
+#  This program and the accompanying materials are made available under the
+#  terms of the Apache License, Version 2.0 which is available at
+#    https://www.apache.org/licenses/LICENSE-2.0
+#
+#  SPDX-License-Identifier: Apache-2.0
+#
+#  Contributors:
+#    Bayerische Motoren Werke Aktiengesellschaft (BMW AG) - initial API and implementation
+#
+
+---
+name: "Publish Maven Artifacts"
+description: "Build and publish maven artifacts to repository"
+
+inputs:
+  version:
+    description: the version to be attached to the artifacts, if not specified, the one configured in the project will be used
+    required: false
+  gpg-private-key:
+    description: the gpg private key used to publish
+    required: true
+  gpg-passphrase:
+    description: the gpg passphrase used to publish
+    required: true
+  osshr-username:
+    description: the OSSHR username
+    required: true
+  osshr-password:
+    description: the OSSHR password
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: ./.github/actions/setup-build
+
+    - uses: ./.github/actions/import-gpg-key
+      with:
+        gpg-private-key: ${{ inputs.gpg-private-key }}
+
+    - if: inputs.version != null
+      shell: bash
+      run: |
+        sed -i 's#^version=.*#version=${{ inputs.version }}#g' $(find . -name "gradle.properties")
+
+    - name: "Publish To OSSRH/MavenCentral"
+      shell: bash
+      env:
+        OSSRH_USER: ${{ inputs.osshr-username }}
+        OSSRH_PASSWORD: ${{ inputs.osshr-password }}
+      run: |-
+        VERSION=$(grep "version" gradle.properties  | awk -F= '{print $2}') 
+        cmd=""
+        if [[ $VERSION != *-SNAPSHOT ]]
+        then
+          cmd="closeAndReleaseSonatypeStagingRepository";
+        fi
+        echo "Publishing Version $VERSION to Sonatype"
+        ./gradlew publishToSonatype ${cmd} --no-parallel -Pversion=$VERSION -Psigning.gnupg.executable=gpg -Psigning.gnupg.passphrase="${{ inputs.gpg-passphrase }}" \
+                -Dorg.gradle.internal.network.retry.max.attempts=5 -Dorg.gradle.internal.network.retry.initial.backOff=5000
+ 

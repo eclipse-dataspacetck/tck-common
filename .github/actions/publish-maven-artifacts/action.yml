@@ -49,7 +49,7 @@ runs:
     - name: "Publish To OSSRH/MavenCentral"
       shell: bash
       env:
-        OSSRH_USER: ${{ inputs.osshr-username }}
+        OSSRH_USERNAME: ${{ inputs.osshr-username }}
         OSSRH_PASSWORD: ${{ inputs.osshr-password }}
       run: |-
         VERSION=$(grep "version" gradle.properties  | awk -F= '{print $2}') 

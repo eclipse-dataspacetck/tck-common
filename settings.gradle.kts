@@ -38,3 +38,4 @@ dependencyResolutionManagement {
 
 
 include(":api:core-api")
+include(":annotation-processors:test-plan-generator")

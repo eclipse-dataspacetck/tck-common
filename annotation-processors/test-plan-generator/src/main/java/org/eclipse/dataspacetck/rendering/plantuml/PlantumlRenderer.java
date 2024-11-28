@@ -26,7 +26,7 @@ import java.io.InputStream;
 
 public class PlantumlRenderer implements DiagramImageRenderer {
 
-    private FileFormat fileFormat;
+    private final FileFormat fileFormat;
 
 
     public PlantumlRenderer(String fileFormat) {
@@ -38,7 +38,6 @@ public class PlantumlRenderer implements DiagramImageRenderer {
         var reader = new SourceStringReader(diagramString);
         var bos = new ByteArrayOutputStream();
         try {
-            fileFormat = FileFormat.SVG;
             reader.outputImage(bos, new FileFormatOption(fileFormat));
             var input = new ByteArrayInputStream(bos.toByteArray());
             bos.flush();

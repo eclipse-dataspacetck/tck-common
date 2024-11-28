@@ -43,7 +43,6 @@ import javax.tools.StandardLocation;
 
 import static java.util.Optional.ofNullable;
 import static javax.tools.Diagnostic.Kind.NOTE;
-import static javax.tools.Diagnostic.Kind.WARNING;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
 @SupportedOptions({ TestPlanGenerator.OUTPUTDIR_OVERRIDE, TestPlanGenerator.FORCE_CONVERSION, TestPlanGenerator.CONVERSION_FORMAT, TestPlanGenerator.DO_GENERATE })
@@ -107,7 +106,7 @@ public class TestPlanGenerator extends AbstractProcessor {
 
             var preRenderImages = Boolean.parseBoolean(processingEnv.getOptions().get(FORCE_CONVERSION));
             var imageType = ofNullable(processingEnv.getOptions().get(CONVERSION_FORMAT)).orElse(DEFAULT_IMAGE_FORMAT);
-            processingEnv.getMessager().printMessage(WARNING, "Force pre-rendering: %b, image type: %s".formatted(preRenderImages, imageType));
+            processingEnv.getMessager().printMessage(NOTE, "Force pre-rendering: %b, image type: %s".formatted(preRenderImages, imageType));
             var renderer = MarkdownRenderer.Builder.newInstance().baseFilePath(basePath)
                     .imageType(imageType)
                     .preRenderImages(preRenderImages)

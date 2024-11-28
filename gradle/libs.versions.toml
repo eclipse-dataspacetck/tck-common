@@ -3,7 +3,7 @@ format.version = "1.1"
 
 [versions]
 assertj = "3.26.3"
-junit = "1.10.3"
+junit = "1.11.3"
 jupiter = "5.10.3"
 okhttp = "4.12.0"
 

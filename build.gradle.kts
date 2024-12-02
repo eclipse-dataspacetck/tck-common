@@ -29,6 +29,9 @@ allprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
 
+    configure<JavaPluginExtension> {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    }
 
     tasks.test {
         useJUnitPlatform()

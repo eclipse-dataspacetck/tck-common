@@ -1,0 +1,103 @@
+name: Prepare Release
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: the version to be released. If it ends with '.0' a proper release is created, bugfix otherwise
+        required: true
+        type: string
+
+jobs:
+
+  Prepare-Release:
+    runs-on: ubuntu-latest
+    outputs:
+      RELEASE_REF: ${{ steps.commit-changes.outputs.RELEASE_REF }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: set release type
+        shell: bash
+        id: vars
+        run: |
+          type=bugfix
+          if [[ ${{ inputs.version }} == *0 ]] 
+          then
+            type=release
+          fi
+          echo "type=$type" >> $GITHUB_OUTPUT
+
+      - uses: eclipse-dataspacetck/tck-common/.github/actions/generate-dependencies-file@main
+        with:
+          run: strict
+
+      - name: Replace published DEPENDENCIES file link in NOTICE with the one just created
+        run: sed -i "s#\[DEPENDENCIES\]\(.*\)#\[DEPENDENCIES\]\(DEPENDENCIES\)#g" NOTICE.md
+
+      - uses: eclipse-dataspacetck/tck-common/.github/actions/set-project-version@main
+        with:
+          version: ${{ inputs.version }}-SNAPSHOT
+
+      - name: Commit changes on ${{ steps.vars.outputs.type }}/${{ inputs.version }} branch
+        shell: bash
+        id: commit-changes
+        run: |
+          git config user.name "eclipse-dataspacetck-bot"
+          git config user.email "dataspacetck-bot@eclipse.org"
+
+          RELEASE_REF=${{ steps.vars.outputs.type }}/${{ inputs.version }}
+          git checkout -b $RELEASE_REF
+          
+          git add .
+          git commit -m "Prepare ${{ steps.vars.outputs.type }} ${{ inputs.version }}"
+          
+          git push origin $RELEASE_REF
+          echo "RELEASE_REF=$RELEASE_REF" >> $GITHUB_OUTPUT
+
+  Bump-Main-Version:
+    if: github.ref_name == 'main'
+    needs: [ Prepare-Release ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: eclipse-dataspacetck/tck-common/.github/actions/bump-version@main
+        with:
+          base_version: ${{ inputs.version }}
+
+  Publish-Main-Snapshot:
+    # publish snapshot artifacts for the next x.y.0 version
+    if: github.ref_name == 'main'
+    needs: [ Bump-Main-Version ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: eclipse-dataspacetck/tck-common/.github/actions/publish-maven-artifacts@main
+        with:
+          gpg-private-key: ${{ secrets.ORG_GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.ORG_GPG_PASSPHRASE }}
+          osshr-username: ${{ secrets.ORG_OSSRH_USERNAME }}
+          osshr-password: ${{ secrets.ORG_OSSRH_PASSWORD }}
+
+  Publish-Bugfix-Snapshot:
+    # publish snapshot artifacts from the bugfix branch (RELEASE_REF) only for bugfix releases (that does not start from main)
+    if: github.ref_name != 'main'
+    needs: [ Prepare-Release ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.Prepare-Release.outputs.RELEASE_REF }}
+
+      - uses: eclipse-dataspacetck/tck-common/.github/actions/publish-maven-artifacts@main
+        with:
+          gpg-private-key: ${{ secrets.ORG_GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.ORG_GPG_PASSPHRASE }}
+          osshr-username: ${{ secrets.ORG_OSSRH_USERNAME }}
+          osshr-password: ${{ secrets.ORG_OSSRH_PASSWORD }}
+

@@ -1,0 +1,19 @@
+name: "Set project version"
+description: "Sets the project version"
+
+inputs:
+  version:
+    description: The version to be set in the project.
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: set version to gradle.properties and in the version catalog
+      shell: bash
+      run: |
+        # updates the project version
+        sed -i 's#^version=.*#version='"${{ inputs.version }}"'#g' $(find . -name "gradle.properties")
+        
+        # updates the eventual core library version in the version catalog
+        sed -i 's#^tck\s*=\s*.*#tck = "'"${{ inputs.version }}"'"#g' gradle/libs.versions.toml

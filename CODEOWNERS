@@ -15,3 +15,6 @@ NOTICE.md @jimmarino @wolf4ood @paullatzelsperger
 .github/actions/ @paullatzelsperger
 .github/ISSUE_TEMPLATE @paullatzelsperger
 .github/workflows/ @paullatzelsperger
+
+annotation-processors/ @paullatzelsperger
+api/ @paullatzelsperger

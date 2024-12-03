@@ -1,4 +1,4 @@
-# Notices for Eclipse Dataspace Testkit Common
+# Notices for Eclipse Dataspace Technology Compatibility Kit
 
 This content is produced and maintained by the Eclipse Dash, Tools for
 Committers project.
@@ -24,13 +24,14 @@ SPDX-License-Identifier: Apache-2.0
 
 ## Source Code
 
-The project maintains the following source code repositoriy:
+The project maintains the following source code repository:
 
-* https://github.com/eclipse-dataspacetck/cvf
+* https://github.com/eclipse-dataspacetck/tck-common
 
 ## Third-party Content (Overarching All Modules)
 
-Please refer to the published dependencies file for a detailed report.
+Please refer to the published [DEPENDENCIES](https://eclipse-dataspacetck.github.io/tck-common/DEPENDENCIES) file for a
+detailed report.
 
 ## Cryptography
 

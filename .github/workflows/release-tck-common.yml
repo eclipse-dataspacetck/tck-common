@@ -12,7 +12,7 @@
 #
 
 ---
-name: Create CVF Release
+name: Create Release
 on:
   workflow_dispatch:
     inputs:
@@ -59,11 +59,11 @@ jobs:
           commit_message_template: 'Merge commit for release of version v${{ env.TCK_VERSION }}'
 
     outputs:
-      cvf-version: ${{ env.TCK_VERSION }}
+      tck-version: ${{ env.TCK_VERSION }}
 
   Github-Release:
     # cannot use the workflow-level env yet as it does not yet exist, must take output from previous job
-    if: ${{ !endsWith( needs.Prepare-Release.outputs.cvf-version, '-SNAPSHOT') }}
+    if: ${{ !endsWith( needs.Prepare-Release.outputs.tck-version, '-SNAPSHOT') }}
     needs:
       - Prepare-Release
     runs-on: ubuntu-latest
@@ -84,7 +84,7 @@ jobs:
   Bump-Version:
     name: 'Update release version'
     # cannot use the workflow-level env yet as it does not yet exist, must take output from previous job
-    if: ${{ !endsWith( needs.Prepare-Release.outputs.cvf-version, '-SNAPSHOT') }}
+    if: ${{ !endsWith( needs.Prepare-Release.outputs.tck-version, '-SNAPSHOT') }}
     needs: [ Prepare-Release, Github-Release ]
     runs-on: ubuntu-latest
     steps:
@@ -92,4 +92,4 @@ jobs:
       - uses: ./.github/actions/bump-version
         with:
           target_branch: "main"
-          base_version: ${{ needs.Prepare-Release.outputs.cvf-version }}
+          base_version: ${{ needs.Prepare-Release.outputs.tck-version }}

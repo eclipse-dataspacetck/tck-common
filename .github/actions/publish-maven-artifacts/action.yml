@@ -35,9 +35,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: ./.github/actions/setup-build
+    - uses: eclipse-dataspacetck/tck-common/.github/actions/setup-build@main
 
-    - uses: ./.github/actions/import-gpg-key
+    - uses: eclipse-dataspacetck/tck-common/.github/actions/import-gpg-key@main
       with:
         gpg-private-key: ${{ inputs.gpg-private-key }}
 

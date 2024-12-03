@@ -28,4 +28,6 @@ jobs:
 
   Publish-Dependencies:
     uses: eclipse-dataspacetck/tck-common/.github/workflows/publish-dependencies.yml@main
+    permissions:
+      contents: write
     secrets: inherit

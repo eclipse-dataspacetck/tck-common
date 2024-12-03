@@ -17,6 +17,9 @@ name: publish dependencies
 on:
   workflow_call:
 
+permissions:
+  contents: write
+
 jobs:
   publish-dependencies:
     runs-on: ubuntu-latest

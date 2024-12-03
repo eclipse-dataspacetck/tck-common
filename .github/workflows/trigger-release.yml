@@ -12,7 +12,7 @@
 #
 
 ---
-name: Release
+name: Trigger (finalize) Release
 
 on:
   workflow_dispatch:

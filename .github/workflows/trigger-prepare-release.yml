@@ -12,7 +12,7 @@
 #
 
 ---
-name: Prepare Release
+name: Trigger Release Preparation
 
 on:
   workflow_dispatch:

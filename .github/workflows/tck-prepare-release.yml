@@ -95,10 +95,10 @@ jobs:
 
       - uses: eclipse-dataspacetck/tck-common/.github/actions/publish-maven-artifacts@main
         with:
-          gpg-private-key: ${{ secrets.ORG_GPG_PRIVATE_KEY }}
-          gpg-passphrase: ${{ secrets.ORG_GPG_PASSPHRASE }}
-          osshr-username: ${{ secrets.ORG_OSSRH_USERNAME }}
-          osshr-password: ${{ secrets.ORG_OSSRH_PASSWORD }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          osshr-username: ${{ secrets.OSSRH_USERNAME }}
+          osshr-password: ${{ secrets.OSSRH_PASSWORD }}
 
   Publish-Bugfix-Snapshot:
     # publish snapshot artifacts from the bugfix branch (RELEASE_REF) only for bugfix releases (that does not start from main)
@@ -112,8 +112,8 @@ jobs:
 
       - uses: eclipse-dataspacetck/tck-common/.github/actions/publish-maven-artifacts@main
         with:
-          gpg-private-key: ${{ secrets.ORG_GPG_PRIVATE_KEY }}
-          gpg-passphrase: ${{ secrets.ORG_GPG_PASSPHRASE }}
-          osshr-username: ${{ secrets.ORG_OSSRH_USERNAME }}
-          osshr-password: ${{ secrets.ORG_OSSRH_PASSWORD }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          osshr-username: ${{ secrets.OSSRH_USERNAME }}
+          osshr-password: ${{ secrets.OSSRH_PASSWORD }}
 

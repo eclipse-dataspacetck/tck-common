@@ -20,4 +20,6 @@ on:
 jobs:
   Release:
     uses: eclipse-dataspacetck/tck-common/.github/workflows/tck-release.yml@main
+    permissions:
+      contents: write
     secrets: inherit

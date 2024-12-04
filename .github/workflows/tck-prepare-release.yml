@@ -26,6 +26,8 @@ jobs:
 
   Prepare-Release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     outputs:
       RELEASE_REF: ${{ steps.commit-changes.outputs.RELEASE_REF }}
     steps:

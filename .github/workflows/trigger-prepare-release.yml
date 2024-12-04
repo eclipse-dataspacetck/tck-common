@@ -31,6 +31,8 @@ on:
 jobs:
   Prepare-Release:
     uses: eclipse-dataspacetck/tck-common/.github/workflows/tck-prepare-release.yml@main
+    permissions:
+      contents: write
     secrets: inherit
     with:
       version: ${{ inputs.version }}

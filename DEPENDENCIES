@@ -10,7 +10,7 @@ maven/mavencentral/commons-collections/commons-collections/3.2.2, Apache-2.0, ap
 maven/mavencentral/info.picocli/picocli/4.6.2, Apache-2.0, approved, clearlydefined
 maven/mavencentral/net.sf.saxon/Saxon-HE/10.6, MPL-2.0 AND W3C, approved, #7945
 maven/mavencentral/org.antlr/antlr4-runtime/4.9.3, BSD-3-Clause, approved, #322
-maven/mavencentral/org.apiguardian/apiguardian-api/1.1.2, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.apiguardian/apiguardian-api/1.1.2, Apache-2.0, approved, #17641
 maven/mavencentral/org.checkerframework/checker-qual/3.12.0, MIT, approved, clearlydefined
 maven/mavencentral/org.jacoco/org.jacoco.agent/0.8.12, EPL-2.0, approved, CQ23285
 maven/mavencentral/org.jacoco/org.jacoco.ant/0.8.12, EPL-2.0, approved, #1068

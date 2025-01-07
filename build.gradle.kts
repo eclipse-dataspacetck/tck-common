@@ -135,7 +135,7 @@ checkstyle {
 nexusPublishing {
     repositories {
         sonatype {  //only for users registered in Sonatype after 24 Feb 2021
-            nexusUrl.set(uri("https://oss.sonatype.org/service/local/staging/deploy/maven2/"))
+            nexusUrl.set(uri("https://oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://oss.sonatype.org/content/repositories/snapshots/"))
             username.set(System.getenv("OSSRH_USERNAME") ?: return@sonatype)
             password.set(System.getenv("OSSRH_PASSWORD") ?: return@sonatype)

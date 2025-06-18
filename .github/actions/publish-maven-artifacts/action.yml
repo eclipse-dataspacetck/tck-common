@@ -25,10 +25,10 @@ inputs:
   gpg-passphrase:
     description: the gpg passphrase used to publish
     required: true
-  osshr-username:
+  maven-username:
     description: the OSSHR username
     required: true
-  osshr-password:
+  maven-password:
     description: the OSSHR password
     required: true
 
@@ -46,11 +46,11 @@ runs:
       run: |
         sed -i 's#^version=.*#version=${{ inputs.version }}#g' $(find . -name "gradle.properties")
 
-    - name: "Publish To OSSRH/MavenCentral"
+    - name: "Publish To MavenCentral"
       shell: bash
       env:
-        OSSRH_USERNAME: ${{ inputs.osshr-username }}
-        OSSRH_PASSWORD: ${{ inputs.osshr-password }}
+        CENTRAL_SONATYPE_TOKEN_USERNAME: ${{ inputs.maven-username }}
+        CENTRAL_SONATYPE_TOKEN_PASSWORD: ${{ inputs.maven-password }}
       run: |-
         VERSION=$(grep "version" gradle.properties  | awk -F= '{print $2}') 
         cmd=""

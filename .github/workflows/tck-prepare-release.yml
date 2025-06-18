@@ -97,8 +97,8 @@ jobs:
         with:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          osshr-username: ${{ secrets.OSSRH_USERNAME }}
-          osshr-password: ${{ secrets.OSSRH_PASSWORD }}
+          maven-username: ${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
+          maven-password: ${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
 
   Publish-Bugfix-Snapshot:
     # publish snapshot artifacts from the bugfix branch (RELEASE_REF) only for bugfix releases (that does not start from main)
@@ -114,6 +114,6 @@ jobs:
         with:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          osshr-username: ${{ secrets.OSSRH_USERNAME }}
-          osshr-password: ${{ secrets.OSSRH_PASSWORD }}
+          maven-username: ${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
+          maven-password: ${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
 

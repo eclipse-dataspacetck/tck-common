@@ -38,7 +38,7 @@ jobs:
         id: vars
         run: |
           type=bugfix
-          if [[ ${{ inputs.version }} == *0 ]] 
+          if [[ "${{ inputs.version }}" == *0 || "${{ inputs.version }}" == *RC* ]]
           then
             type=release
           fi

@@ -63,6 +63,6 @@ runs:
 
         # Commit and push to the desired branch, defaults to 'main'
         git add .
-        git commit --message "Bump version from $baseVersion to $newVersion [skip ci]"
+        git commit --allow-empty --message "Bump version from $baseVersion to $newVersion [skip ci]"
 
         git push origin ${{ inputs.target_branch }}

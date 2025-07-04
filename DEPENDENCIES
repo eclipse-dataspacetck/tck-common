@@ -20,7 +20,6 @@ maven/mavencentral/org.javassist/javassist/3.28.0-GA, Apache-2.0 OR LGPL-2.1-or-
 maven/mavencentral/org.junit.jupiter/junit-jupiter-api/5.13.2, EPL-2.0, approved, #21577
 maven/mavencentral/org.junit.jupiter/junit-jupiter-engine/5.13.2, EPL-2.0, approved, #21699
 maven/mavencentral/org.junit.jupiter/junit-jupiter-params/5.13.2, EPL-2.0, approved, #21706
-maven/mavencentral/org.junit.jupiter/junit-jupiter/5.13.1, EPL-2.0, approved, #21845
 maven/mavencentral/org.junit.jupiter/junit-jupiter/5.13.2, EPL-2.0, approved, #21845
 maven/mavencentral/org.junit.platform/junit-platform-commons/1.13.2, EPL-2.0, approved, #21576
 maven/mavencentral/org.junit.platform/junit-platform-engine/1.13.2, EPL-2.0, approved, #21701

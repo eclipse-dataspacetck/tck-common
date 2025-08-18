@@ -41,7 +41,7 @@ jobs:
     if: |
       needs.secrets-presence.outputs.HAS_CREDENTIALS
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: eclipse-dataspacetck/tck-common/.github/actions/publish-maven-artifacts@main
         with:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}

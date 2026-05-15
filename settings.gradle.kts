@@ -37,5 +37,8 @@ dependencyResolutionManagement {
 }
 
 
-include(":api:core-api")
 include(":annotation-processors:test-plan-generator")
+include(":api:core-api")
+include(":boot")
+include(":core")
+include(":runtimes:tck-runtime")

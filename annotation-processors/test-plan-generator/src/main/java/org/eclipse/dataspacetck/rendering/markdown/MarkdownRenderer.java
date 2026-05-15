@@ -157,7 +157,7 @@ public class MarkdownRenderer implements TestPlanRenderer {
                 .append(NEWLINE);
 
         if (specUrl != null) {
-            item.append(italic("View in the " + link("DSP Specification", specUrl)))
+            item.append(italic("View in the " + link("Specification", specUrl)))
                     .append(BR)
                     .append(NEWLINE);
         }

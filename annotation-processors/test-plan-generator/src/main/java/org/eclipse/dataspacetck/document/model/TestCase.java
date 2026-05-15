@@ -25,9 +25,9 @@ package org.eclipse.dataspacetck.document.model;
  */
 public record TestCase(String methodName, String displayName, String number, boolean isMandatory, String diagramCode) {
 
-    public static final String DSP_SPEC_URL = "https://foo.bar/spec/";
+    public static final String SPEC_URL = "https://foo.bar/spec/";
 
     public String specUrl() {
-        return DSP_SPEC_URL + number;
+        return SPEC_URL + number;
     }
 }

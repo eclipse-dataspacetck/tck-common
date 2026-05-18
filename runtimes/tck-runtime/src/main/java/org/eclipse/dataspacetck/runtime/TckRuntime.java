@@ -40,6 +40,7 @@ import static org.eclipse.dataspacetck.core.api.system.SystemsConstants.TCK_LAUN
 import static org.eclipse.dataspacetck.core.system.ConfigFunctions.propertyOrEnv;
 import static org.eclipse.dataspacetck.core.system.ConsoleMonitor.ANSI_PROPERTY;
 import static org.eclipse.dataspacetck.core.system.ConsoleMonitor.DEBUG_PROPERTY;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.platform.engine.discovery.ClassNameFilter.includeClassNamePatterns;
 
 /**
@@ -77,7 +78,7 @@ public class TckRuntime {
         }
 
         var request = requestBuilder.build();
-        LauncherConfig launcherConfig = LauncherConfig.builder()
+        var launcherConfig = LauncherConfig.builder()
                 .addLauncherSessionListeners(new StoreMonitorSessionListener(monitor))
                 .build();
 
@@ -87,7 +88,11 @@ public class TckRuntime {
         launcher.discover(request);
         launcher.execute(request);
         properties.forEach((k, v) -> System.clearProperty(k));
-        return summaryListener.getSummary();
+        var summary = summaryListener.getSummary();
+        if (summary.getTestsFoundCount() == 0) {
+            fail("No TCK tests found");
+        }
+        return summary;
     }
 
     public static class Builder {

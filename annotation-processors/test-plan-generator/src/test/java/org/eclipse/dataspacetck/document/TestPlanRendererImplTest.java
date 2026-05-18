@@ -56,7 +56,7 @@ class TestPlanRendererImplTest {
         assertThat(render).contains("**C-12343 (mandatory)**<br/>\n");
         assertThat(render).contains("Description: test case name<br/>\n");
         assertThat(render).contains("Test Number: `C-12343`<br/>\n");
-        assertThat(render).contains("_View in the [DSP Specification](https://foo.bar)_<br/>\n");
+        assertThat(render).contains("_View in the [Specification](https://foo.bar)_<br/>\n");
         assertThat(render).contains("![C-12343](testimage.png)\n");
         assertThat(render).endsWith("\n");
     }
@@ -69,7 +69,7 @@ class TestPlanRendererImplTest {
         assertThat(render).contains("**C-12343 (optional)**<br/>\n");
         assertThat(render).contains("Description: test case name<br/>\n");
         assertThat(render).contains("Test Number: `C-12343`<br/>\n");
-        assertThat(render).contains("_View in the [DSP Specification](https://foo.bar/spec/C-12343)_<br/>\n");
+        assertThat(render).contains("_View in the [Specification](https://foo.bar/spec/C-12343)_<br/>\n");
         assertThat(render).contains("```mermaid");
         assertThat(render).endsWith("\n");
     }

@@ -112,7 +112,7 @@ public class TestPlanGenerator extends AbstractProcessor {
                     .preRenderImages(preRenderImages)
                     .build();
 
-            renderer.title("DSP Test Plan Document");
+            renderer.title("Test Plan Document");
             renderer.subTitle("Created " + new Date());
 
             testGraph.render(renderer);

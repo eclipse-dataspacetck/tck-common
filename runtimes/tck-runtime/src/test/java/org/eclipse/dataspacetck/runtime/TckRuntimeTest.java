@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.dataspacetck.core.api.system.SystemsConstants.TCK_LAUNCHER;
 
 public class TckRuntimeTest {
@@ -33,6 +34,16 @@ public class TckRuntimeTest {
     @AfterEach
     void tearDown() {
         System.setProperty("tck-dummy-test", "false");
+    }
+
+    @Test
+    void shouldFail_whenNoTestFound() {
+        var runtime = TckRuntime.Builder.newInstance()
+                .launcher(TestSystemLauncher.class)
+                .addPackage("not.existing")
+                .build();
+
+        assertThatThrownBy(runtime::execute).isInstanceOf(AssertionError.class).hasMessage("No TCK tests found");
     }
 
     @Test

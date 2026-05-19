@@ -3,7 +3,7 @@ format.version = "1.1"
 
 [versions]
 assertj = "3.27.7"
-awaitility = "4.2.0"
+awaitility = "4.3.0"
 jackson = "2.21.2"
 junit = "6.0.3"
 jupiter = "6.0.3"

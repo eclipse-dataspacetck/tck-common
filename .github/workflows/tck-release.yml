@@ -43,7 +43,7 @@ jobs:
           TAG=v${{ steps.set-version.outputs.VERSION }}
 
           git add .
-          git commit -m "Release Version $TAG" 
+          git commit --allow-empty -m "Release Version $TAG" 
 
           git tag $TAG
           git push --atomic origin ${{ github.ref_name }} $TAG

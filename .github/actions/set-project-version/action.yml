@@ -28,6 +28,3 @@ runs:
       run: |
         # updates the project version
         sed -i 's#^version=.*#version='"${{ inputs.version }}"'#g' $(find . -name "gradle.properties")
-        
-        # updates the eventual core library version in the version catalog
-        sed -i 's#^tck\s*=\s*.*#tck = "'"${{ inputs.version }}"'"#g' gradle/libs.versions.toml

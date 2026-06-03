@@ -73,10 +73,9 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          generateReleaseNotes: true
-          tag: ${{ needs.create-tag.outputs.TAG }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          removeArtifacts: true
+      - run: |
+          latest=$(gh release view --json tagName | jq -r '.tagName')
+          version="${{ needs.create-tag.outputs.VERSION }}"
+          gh release create $version $( [[ ! "$version" =~ RC ]] && echo "--latest" ) --generate-notes --notes-start-tag ${latest}
+        env:
+          GH_TOKEN: ${{ github.token }}

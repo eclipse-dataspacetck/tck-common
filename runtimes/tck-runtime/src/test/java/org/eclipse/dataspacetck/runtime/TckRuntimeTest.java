@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.dataspacetck.core.api.system.SystemsConstants.TCK_LAUNCHER;
+import static org.eclipse.dataspacetck.runtime.filter.DisplayNameFilter.includeName;
 
 public class TckRuntimeTest {
 
@@ -88,7 +89,22 @@ public class TckRuntimeTest {
     }
 
     @Test
-    void canFilterByTestName() {
+    void canFilterByTestName_whenUsingFilter() {
+        var runtime = TckRuntime.Builder.newInstance()
+                .launcher(TestSystemLauncher.class)
+                .addPackage("org.eclipse.dataspacetck.runtime.test")
+                .filters(includeName(displayName -> displayName.equals("FILTER")))
+                .build();
+
+        var summary = runtime.execute();
+
+        assertThat(summary.getTestsSucceededCount()).isEqualTo(1);
+        assertThat(summary.getTestsFoundCount()).isEqualTo(1);
+    }
+
+    @Deprecated(since = "1.0.0")
+    @Test
+    void canFilterByTestName_deprecated() {
         var runtime = TckRuntime.Builder.newInstance()
                 .launcher(TestSystemLauncher.class)
                 .addPackage("org.eclipse.dataspacetck.runtime.test")

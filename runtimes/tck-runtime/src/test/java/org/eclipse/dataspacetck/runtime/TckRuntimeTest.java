@@ -18,6 +18,7 @@ import org.eclipse.dataspacetck.core.spi.system.SystemConfiguration;
 import org.eclipse.dataspacetck.core.spi.system.SystemLauncher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -88,34 +89,70 @@ public class TckRuntimeTest {
         });
     }
 
-    @Test
-    void canFilterByTestName_whenUsingFilter() {
-        var runtime = TckRuntime.Builder.newInstance()
-                .launcher(TestSystemLauncher.class)
-                .addPackage("org.eclipse.dataspacetck.runtime.test")
-                .filters(includeName(displayName -> displayName.equals("FILTER")))
-                .build();
+    @Nested
+    class Filters {
+        @Test
+        void canFilterByTestName_whenUsingFilter() {
+            var runtime = TckRuntime.Builder.newInstance()
+                    .launcher(TestSystemLauncher.class)
+                    .addPackage("org.eclipse.dataspacetck.runtime.test")
+                    .filters(includeName(displayName -> displayName.equals("FILTER")))
+                    .build();
 
-        var summary = runtime.execute();
+            var summary = runtime.execute();
 
-        assertThat(summary.getTestsSucceededCount()).isEqualTo(1);
-        assertThat(summary.getTestsFoundCount()).isEqualTo(1);
+            assertThat(summary.getTestsSucceededCount()).isEqualTo(1);
+            assertThat(summary.getTestsFoundCount()).isEqualTo(1);
+        }
+
+        @Test
+        void canFilterByTestTagInclude_whenUsingProperties() {
+            var runtime = TckRuntime.Builder.newInstance()
+                    .property("dataspacetck.filters.tags.include", "filter,anothertag")
+                    .launcher(TestSystemLauncher.class)
+                    .addPackage("org.eclipse.dataspacetck.runtime.test")
+                    .build();
+
+            var summary = runtime.execute();
+
+            assertThat(summary.getTestsSucceededCount()).isEqualTo(1);
+            assertThat(summary.getTestsFoundCount()).isEqualTo(1);
+        }
+
+        @Test
+        void canFilterByTestTagExclude_whenUsingProperties() {
+            var allTests = TckRuntime.Builder.newInstance()
+                    .launcher(TestSystemLauncher.class)
+                    .addPackage("org.eclipse.dataspacetck.runtime.test")
+                    .build().execute().getTestsFoundCount();
+
+            var filteredTests = TckRuntime.Builder.newInstance()
+                    .property("dataspacetck.filters.tags.exclude", "filter,anothertag")
+                    .launcher(TestSystemLauncher.class)
+                    .addPackage("org.eclipse.dataspacetck.runtime.test")
+                    .build()
+                    .execute();
+
+            assertThat(filteredTests.getTestsFoundCount()).isEqualTo(allTests - 1);
+        }
+
+        @Deprecated(since = "1.0.0")
+        @Test
+        void canFilterByTestName_deprecated() {
+            var runtime = TckRuntime.Builder.newInstance()
+                    .launcher(TestSystemLauncher.class)
+                    .addPackage("org.eclipse.dataspacetck.runtime.test")
+                    .displayNameMatching(displayName -> displayName.equals("FILTER"))
+                    .build();
+
+            var summary = runtime.execute();
+
+            assertThat(summary.getTestsSucceededCount()).isEqualTo(1);
+            assertThat(summary.getTestsFoundCount()).isEqualTo(1);
+        }
     }
 
-    @Deprecated(since = "1.0.0")
-    @Test
-    void canFilterByTestName_deprecated() {
-        var runtime = TckRuntime.Builder.newInstance()
-                .launcher(TestSystemLauncher.class)
-                .addPackage("org.eclipse.dataspacetck.runtime.test")
-                .displayNameMatching(displayName -> displayName.equals("FILTER"))
-                .build();
 
-        var summary = runtime.execute();
-
-        assertThat(summary.getTestsSucceededCount()).isEqualTo(1);
-        assertThat(summary.getTestsFoundCount()).isEqualTo(1);
-    }
 
     public static class TestSystemLauncher implements SystemLauncher {
 

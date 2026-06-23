@@ -17,7 +17,7 @@ package org.eclipse.dataspacetck.runtime;
 import org.eclipse.dataspacetck.core.spi.boot.Monitor;
 import org.eclipse.dataspacetck.core.spi.system.SystemLauncher;
 import org.eclipse.dataspacetck.core.system.ConsoleMonitor;
-import org.junit.platform.engine.FilterResult;
+import org.eclipse.dataspacetck.runtime.filter.DisplayNameFilter;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.engine.support.store.Namespace;
 import org.junit.platform.launcher.LauncherSession;
@@ -30,6 +30,7 @@ import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,9 @@ public class TckRuntime {
     private final Map<String, String> properties = new HashMap<>();
     private Monitor monitor;
     private Class<? extends SystemLauncher> launcher;
+    @Deprecated(since = "1.0.1")
     private Predicate<String> displayNameMatching;
+    private final List<PostDiscoveryFilter> filters = new ArrayList<>();
 
     private TckRuntime() {
     }
@@ -72,10 +75,10 @@ public class TckRuntime {
 
 
         if (displayNameMatching != null) {
-            requestBuilder.filters((PostDiscoveryFilter) descriptor -> displayNameMatching.test(descriptor.getDisplayName())
-                    ? FilterResult.included("Matches display name")
-                    : FilterResult.excluded("Does not match display name"));
+            filters.add(DisplayNameFilter.includeName(displayNameMatching));
         }
+
+        filters.forEach(requestBuilder::filters);
 
         var request = requestBuilder.build();
         var launcherConfig = LauncherConfig.builder()
@@ -132,12 +135,25 @@ public class TckRuntime {
         }
 
         /**
+         * Add all supplied post discovery filters to the runtime.
+         *
+         * @param filters the filters.
+         * @return the builder.
+         */
+        public Builder filters(PostDiscoveryFilter... filters) {
+            runtime.filters.addAll(Arrays.stream(filters).toList());
+            return this;
+        }
+
+        /**
          * Permit to filter tests by the content of @DisplayName annotation. If the predicate matches the test is included,
          * excluded otherwise.
          *
          * @param displayNameMatching the predicate.
          * @return the builder.
+         * @deprecated please use {@link #filters} with {@link org.eclipse.dataspacetck.runtime.filter.DisplayNameFilter#includeName(Predicate)}
          */
+        @Deprecated(since = "1.0.0")
         public Builder displayNameMatching(Predicate<String> displayNameMatching) {
             runtime.displayNameMatching = displayNameMatching;
             return this;
@@ -153,7 +169,6 @@ public class TckRuntime {
 
             return runtime;
         }
-
     }
 
     private static class StoreMonitorSessionListener implements LauncherSessionListener {

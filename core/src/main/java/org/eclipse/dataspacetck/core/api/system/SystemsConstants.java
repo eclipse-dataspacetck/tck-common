@@ -26,4 +26,7 @@ public interface SystemsConstants {
     String TCK_DEFAULT_HOST = "0.0.0.0";
     int TCK_DEFAULT_PORT = 8083;
     String TCK_LAUNCHER = TCK_PREFIX + ".launcher";
+
+    String TCK_FILTERS_TAGS_INCLUDE = TCK_PREFIX + ".filters.tags.include";
+    String TCK_FILTERS_TAGS_EXCLUDE = TCK_PREFIX + ".filters.tags.exclude";
 }

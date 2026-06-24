@@ -18,11 +18,14 @@ import org.eclipse.dataspacetck.core.spi.boot.Monitor;
 import org.eclipse.dataspacetck.core.spi.system.SystemLauncher;
 import org.eclipse.dataspacetck.core.system.ConsoleMonitor;
 import org.eclipse.dataspacetck.runtime.filter.DisplayNameFilter;
+import org.jspecify.annotations.NonNull;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.engine.support.store.Namespace;
+import org.junit.platform.launcher.LauncherDiscoveryRequest;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
 import org.junit.platform.launcher.PostDiscoveryFilter;
+import org.junit.platform.launcher.TagFilter;
 import org.junit.platform.launcher.core.LauncherConfig;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
@@ -37,6 +40,8 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import static java.lang.Boolean.parseBoolean;
+import static org.eclipse.dataspacetck.core.api.system.SystemsConstants.TCK_FILTERS_TAGS_EXCLUDE;
+import static org.eclipse.dataspacetck.core.api.system.SystemsConstants.TCK_FILTERS_TAGS_INCLUDE;
 import static org.eclipse.dataspacetck.core.api.system.SystemsConstants.TCK_LAUNCHER;
 import static org.eclipse.dataspacetck.core.system.ConfigFunctions.propertyOrEnv;
 import static org.eclipse.dataspacetck.core.system.ConsoleMonitor.ANSI_PROPERTY;
@@ -69,18 +74,7 @@ public class TckRuntime {
 
         var summaryListener = new SummaryGeneratingListener();
 
-        var requestBuilder = LauncherDiscoveryRequestBuilder.request()
-                .filters(includeClassNamePatterns(TEST_POSTFIX))
-                .selectors(packages.stream().map(DiscoverySelectors::selectPackage).toList());
-
-
-        if (displayNameMatching != null) {
-            filters.add(DisplayNameFilter.includeName(displayNameMatching));
-        }
-
-        filters.forEach(requestBuilder::filters);
-
-        var request = requestBuilder.build();
+        var request = createLauncherDiscoveryRequest();
         var launcherConfig = LauncherConfig.builder()
                 .addLauncherSessionListeners(new StoreMonitorSessionListener(monitor))
                 .build();
@@ -96,6 +90,31 @@ public class TckRuntime {
             fail("No TCK tests found");
         }
         return summary;
+    }
+
+    private @NonNull LauncherDiscoveryRequest createLauncherDiscoveryRequest() {
+        var requestBuilder = LauncherDiscoveryRequestBuilder.request()
+                .filters(includeClassNamePatterns(TEST_POSTFIX))
+                .selectors(packages.stream().map(DiscoverySelectors::selectPackage).toList());
+
+
+        if (properties.containsKey(TCK_FILTERS_TAGS_INCLUDE)) {
+            var includeTags = properties.get(TCK_FILTERS_TAGS_INCLUDE);
+            requestBuilder.filters(TagFilter.includeTags(includeTags.split(",")));
+        }
+
+        if (properties.containsKey(TCK_FILTERS_TAGS_EXCLUDE)) {
+            var excludeTags = properties.get(TCK_FILTERS_TAGS_EXCLUDE);
+            requestBuilder.filters(TagFilter.excludeTags(excludeTags.split(",")));
+        }
+
+        if (displayNameMatching != null) {
+            requestBuilder.filters(DisplayNameFilter.includeName(displayNameMatching));
+        }
+
+        filters.forEach(requestBuilder::filters);
+
+        return requestBuilder.build();
     }
 
     public static class Builder {

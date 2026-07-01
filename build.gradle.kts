@@ -60,6 +60,11 @@ allprojects {
                 sign(publishing.publications)
             }
         }
+
+        // FIXME - workaround for https://github.com/gradle/gradle/issues/26091
+        tasks.withType<AbstractPublishToMaven>().configureEach {
+            dependsOn(tasks.withType<Sign>())
+        }
     }
 
 

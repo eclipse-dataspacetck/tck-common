@@ -16,9 +16,6 @@ name: "Publish Maven Artifacts"
 description: "Build and publish maven artifacts to repository"
 
 inputs:
-  version:
-    description: the version to be attached to the artifacts, if not specified, the one configured in the project will be used
-    required: false
   gpg-private-key:
     description: the gpg private key used to publish
     required: true
@@ -41,24 +38,14 @@ runs:
       with:
         gpg-private-key: ${{ inputs.gpg-private-key }}
 
-    - if: inputs.version != null
-      shell: bash
-      run: |
-        sed -i 's#^version=.*#version=${{ inputs.version }}#g' $(find . -name "gradle.properties")
-
-    - name: "Publish To MavenCentral"
+    - name: Publish to maven central
       shell: bash
       env:
-        CENTRAL_SONATYPE_TOKEN_USERNAME: ${{ inputs.maven-username }}
-        CENTRAL_SONATYPE_TOKEN_PASSWORD: ${{ inputs.maven-password }}
-      run: |-
-        VERSION=$(grep "version" gradle.properties  | awk -F= '{print $2}') 
-        cmd=""
-        if [[ $VERSION != *-SNAPSHOT ]]
-        then
-          cmd="closeAndReleaseSonatypeStagingRepository";
-        fi
-        echo "Publishing Version $VERSION to Sonatype"
-        ./gradlew publishToSonatype ${cmd} --no-parallel -Pversion=$VERSION -Psigning.gnupg.executable=gpg -Psigning.gnupg.passphrase="${{ inputs.gpg-passphrase }}" \
-                -Dorg.gradle.internal.network.retry.max.attempts=5 -Dorg.gradle.internal.network.retry.initial.backOff=5000
- 
+        ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ inputs.username }}
+        ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ inputs.password }}
+
+        ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ inputs.gpg-private-key }}
+        ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ inputs.gpg-passphrase }}
+      run: ./gradlew publishToMavenCentral -Psigning.gnupg.executable=gpg -Psigning.gnupg.passphrase="${{ inputs.gpg-passphrase }}"
+
+

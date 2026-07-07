@@ -16,20 +16,17 @@ name: "Publish Maven Artifacts"
 description: "Build and publish maven artifacts to repository"
 
 inputs:
-  version:
-    description: the version to be attached to the artifacts, if not specified, the one configured in the project will be used
-    required: false
   gpg-private-key:
     description: the gpg private key used to publish
     required: true
   gpg-passphrase:
     description: the gpg passphrase used to publish
     required: true
-  maven-username:
-    description: the OSSHR username
+  username:
+    description: repository username
     required: true
-  maven-password:
-    description: the OSSHR password
+  password:
+    description: repository password
     required: true
 
 runs:
@@ -41,24 +38,25 @@ runs:
       with:
         gpg-private-key: ${{ inputs.gpg-private-key }}
 
-    - if: inputs.version != null
+    - name: Extract GPG key ID
+      id: extract_keyid
       shell: bash
       run: |
-        sed -i 's#^version=.*#version=${{ inputs.version }}#g' $(find . -name "gradle.properties")
+        KEY_ID=$(gpg --list-secret-keys --keyid-format SHORT 2>/dev/null | grep -E '^ssb.*\[S\]' | head -1 | sed -E 's/.*\/([A-F0-9]{8}).*/\1/')
+        if [ -z "$KEY_ID" ]; then
+          KEY_ID=$(gpg --list-secret-keys --keyid-format SHORT 2>/dev/null | grep '^sec' | head -1 | sed -E 's/.*\/([A-F0-9]{8}).*/\1/')
+        fi
+        echo "keyId=${KEY_ID}" >> $GITHUB_OUTPUT
 
-    - name: "Publish To MavenCentral"
+    - name: Publish to maven central
       shell: bash
       env:
-        CENTRAL_SONATYPE_TOKEN_USERNAME: ${{ inputs.maven-username }}
-        CENTRAL_SONATYPE_TOKEN_PASSWORD: ${{ inputs.maven-password }}
-      run: |-
-        VERSION=$(grep "version" gradle.properties  | awk -F= '{print $2}') 
-        cmd=""
-        if [[ $VERSION != *-SNAPSHOT ]]
-        then
-          cmd="closeAndReleaseSonatypeStagingRepository";
-        fi
-        echo "Publishing Version $VERSION to Sonatype"
-        ./gradlew publishToSonatype ${cmd} --no-parallel -Pversion=$VERSION -Psigning.gnupg.executable=gpg -Psigning.gnupg.passphrase="${{ inputs.gpg-passphrase }}" \
-                -Dorg.gradle.internal.network.retry.max.attempts=5 -Dorg.gradle.internal.network.retry.initial.backOff=5000
- 
+        ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ inputs.username }}
+        ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ inputs.password }}
+
+        ORG_GRADLE_PROJECT_signingKeyId: ${{ steps.extract_keyid.outputs.keyId }}
+        ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ inputs.gpg-private-key }}
+        ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ inputs.gpg-passphrase }}
+      run: ./gradlew publishToMavenCentral -Psigning.gnupg.executable=gpg -Psigning.gnupg.passphrase="${{ inputs.gpg-passphrase }}" --stacktrace --debug
+
+

@@ -22,6 +22,10 @@ plugins {
     alias(libs.plugins.nexuspublishing)
 }
 
+val edcScmUrl: String by project
+val edcScmConnection: String by project
+
+
 allprojects {
 
     apply(plugin = "java-library")
@@ -67,6 +71,12 @@ allprojects {
         }
     }
 
+//    configure<TckBuildExtension> {
+//        pom {
+//            scmUrl.set(providers.gradleProperty("scmUrl"))
+//            scmConnection.set(providers.gradleProperty("scmConnection"))
+//        }
+//    }
 
 }
 

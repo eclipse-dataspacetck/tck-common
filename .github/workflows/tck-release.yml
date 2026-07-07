@@ -60,11 +60,10 @@ jobs:
           ref: ${{ needs.create-tag.outputs.TAG }} # checkout the tag created in the previous step
       - uses: eclipse-dataspacetck/tck-common/.github/actions/publish-maven-artifacts@main
         with:
-          version: ${{ needs.create-tag.outputs.VERSION }} # explicitly pass the version
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          maven-username: ${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
-          maven-password: ${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
+          username: ${{ secrets.CENTRAL_SONATYPE_TOKEN_USERNAME }}
+          password: ${{ secrets.CENTRAL_SONATYPE_TOKEN_PASSWORD }}
 
   create-github-release:
     needs: [ create-tag, publish-release-version ]

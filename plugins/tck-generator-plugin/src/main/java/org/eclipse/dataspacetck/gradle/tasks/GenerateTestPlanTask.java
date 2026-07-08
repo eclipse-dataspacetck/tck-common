@@ -15,6 +15,7 @@
 package org.eclipse.dataspacetck.gradle.tasks;
 
 import org.eclipse.dataspacetck.annotation.processors.TestPlanGenerator;
+import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSetContainer;
@@ -41,6 +42,7 @@ import java.util.List;
  * }
  * </pre>
  */
+@CacheableTask
 public abstract class GenerateTestPlanTask extends JavaCompile {
     public static final String NAME = "genTestPlan";
     private static final List<String> ALLOWED_FORMATS = List.of("png", "svg");

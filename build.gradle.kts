@@ -1,3 +1,5 @@
+import org.eclipse.dataspacetck.gradle.tckbuild.extensions.TckBuildExtension
+
 /*
  *  Copyright (c) 2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *
@@ -19,7 +21,7 @@ plugins {
     checkstyle
     jacoco
     `jacoco-report-aggregation`
-    alias(libs.plugins.nexuspublishing)
+    alias(libs.plugins.tck.build) apply false
 }
 
 val edcScmUrl: String by project
@@ -32,23 +34,10 @@ allprojects {
     apply(plugin = "checkstyle")
     apply(plugin = "maven-publish")
     apply(plugin = "signing")
-
-    configure<JavaPluginExtension> {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-        withSourcesJar()
-        withJavadocJar()
-    }
+    apply(plugin = "org.eclipse.dataspacetck.build.tck-build")
 
     tasks.test {
         useJUnitPlatform()
-    }
-
-    tasks.jar {
-        metaInf {
-            from("${rootProject.projectDir.path}/LICENSE")
-            from("${rootProject.projectDir.path}/DEPENDENCIES")
-            from("${rootProject.projectDir.path}/NOTICE.md")
-        }
     }
 
     dependencies {
@@ -56,87 +45,14 @@ allprojects {
         implementation(rootProject.libs.junit.platform.engine)
     }
 
-    if (!project.hasProperty("skip.signing")) {
-        apply(plugin = "signing")
-        publishing {
-            signing {
-                useGpgCmd()
-                sign(publishing.publications)
-            }
-        }
-
-        // FIXME - workaround for https://github.com/gradle/gradle/issues/26091
-        tasks.withType<AbstractPublishToMaven>().configureEach {
-            dependsOn(tasks.withType<Sign>())
+    configure<TckBuildExtension> {
+        pom {
+            scmUrl.set(providers.gradleProperty("scmUrl"))
+            scmConnection.set(providers.gradleProperty("scmConnection"))
         }
     }
-
-//    configure<TckBuildExtension> {
-//        pom {
-//            scmUrl.set(providers.gradleProperty("scmUrl"))
-//            scmConnection.set(providers.gradleProperty("scmConnection"))
-//        }
-//    }
 
 }
-
-subprojects {
-
-    afterEvaluate {
-
-        publishing {
-            publications.forEach { i ->
-                val mp = (i as MavenPublication)
-                mp.pom {
-                    name.set(project.name)
-                    description.set("Compliance Verification Toolkit")
-                    url.set("https://projects.eclipse.org/projects/technology.dataspacetck")
-
-                    licenses {
-                        license {
-                            name.set("The Apache License, Version 2.0")
-                            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                        }
-                        developers {
-                            developer {
-                                id.set("JimMarino")
-                                name.set("Jim Marino")
-                                email.set("jmarino@metaformsystems.com")
-                            }
-                            developer {
-                                id.set("PaulLatzelsperger")
-                                name.set("Paul Latzelsperger")
-                                email.set("paul.latzelsperger@beardyinc.com")
-                            }
-                            developer {
-                                id.set("EnricoRisa")
-                                name.set("Enrico Risa")
-                                email.set("enrico.risa@gmail.com")
-                            }
-                        }
-                        scm {
-                            connection.set("scm:git:git@github.com:eclipse-dataspacetck/cvf.git")
-                            url.set("https://github.com/eclipse-dataspacetck/cvf.git")
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-    publishing {
-        publications {
-            if (project.subprojects.isEmpty()) {
-                create<MavenPublication>(project.name) {
-                    artifactId = project.name
-                    from(components["java"])
-                }
-            }
-        }
-    }
-}
-
 
 // needed for running the dash tool
 tasks.register("allDependencies", DependencyReportTask::class)
@@ -145,16 +61,4 @@ tasks.register("allDependencies", DependencyReportTask::class)
 checkstyle {
     maxErrors = 0
 }
-
-nexusPublishing {
-    repositories {
-        sonatype {  //only for users registered in Sonatype after 24 Feb 2021
-            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
-            username.set(System.getenv("CENTRAL_SONATYPE_TOKEN_USERNAME") ?: return@sonatype)
-            password.set(System.getenv("CENTRAL_SONATYPE_TOKEN_PASSWORD") ?: return@sonatype)
-        }
-    }
-}
-
 

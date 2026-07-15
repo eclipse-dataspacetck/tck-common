@@ -111,6 +111,7 @@ public class SystemBootstrapExtension implements BeforeAllCallback,
                     .scopeId(id)
                     .annotations(annotations)
                     .monitor(monitor)
+                    .propertyDelegate(k -> context.getConfigurationParameter(k).orElse(propertyOrEnv(k, null)))
                     .build();
             launcher.beforeExecution(configuration, (t, c) -> resolveInHierarchy(t, c, context));
         });

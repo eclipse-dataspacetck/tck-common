@@ -25,4 +25,4 @@ plantuml = { module = "net.sourceforge.plantuml:plantuml", version = "1.2026.6" 
 titanium = { module = "com.apicatalog:titanium-json-ld", version.ref = "titanium" }
 
 [plugins]
-tck-build = { id = "org.eclipse.dataspacetck.build.tck-build", version = "1.2.1" }
+tck-build = { id = "org.eclipse.dataspacetck.build.tck-build", version = "1.2.2" }

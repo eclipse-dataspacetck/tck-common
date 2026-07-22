@@ -4,7 +4,7 @@ format.version = "1.1"
 [versions]
 assertj = "3.27.7"
 awaitility = "4.3.0"
-jackson = "2.22.1"
+jackson = "3.2.1"
 junit = "6.1.2"
 jupiter = "6.1.2"
 mockito = "5.23.0"
@@ -14,7 +14,7 @@ titanium = "1.7.0"
 [libraries]
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
-jackson-jsonp = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jakarta-jsonp", version.ref = "jackson" }
+jackson-jsonp = { module = "tools.jackson.datatype:jackson-datatype-jakarta-jsonp", version.ref = "jackson" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "jupiter" }
 junit-platform-engine = { module = "org.junit.platform:junit-platform-suite-engine", version.ref = "junit" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit" }

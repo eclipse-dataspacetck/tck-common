@@ -22,10 +22,10 @@ jobs:
   create-tag:
     runs-on: ubuntu-latest
     outputs:
-      VERSION: ${{ steps.set-version.outputs.VERSION }}
       TAG: ${{ steps.set-tag.outputs.TAG }}
     steps:
       - uses: actions/checkout@v7
+
       - id: set-version
         run: |
           VERSION=$(echo ${{ github.ref_name }} | cut -d '/' -f 2)
@@ -34,6 +34,7 @@ jobs:
       - uses: eclipse-dataspacetck/tck-common/.github/actions/set-project-version@main
         with:
           version: ${{ steps.set-version.outputs.VERSION }}
+
       - shell: bash
         id: set-tag
         run: |
@@ -74,7 +75,7 @@ jobs:
       - uses: actions/checkout@v7
       - run: |
           latest=$(gh release view --json tagName | jq -r '.tagName')
-          version="${{ needs.create-tag.outputs.VERSION }}"
-          gh release create $version $( [[ ! "$version" =~ RC ]] && echo "--latest" ) --generate-notes --notes-start-tag ${latest}
+          tag="${{ needs.create-tag.outputs.TAG }}"
+          gh release create tag $( [[ ! "tag" =~ RC ]] && echo "--latest" ) --generate-notes --notes-start-tag ${latest}
         env:
           GH_TOKEN: ${{ github.token }}

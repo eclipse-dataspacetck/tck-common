@@ -76,6 +76,6 @@ jobs:
       - run: |
           latest=$(gh release view --json tagName | jq -r '.tagName')
           tag="${{ needs.create-tag.outputs.TAG }}"
-          gh release create tag $( [[ ! "tag" =~ RC ]] && echo "--latest" ) --generate-notes --notes-start-tag ${latest}
+          gh release create $tag $( [[ ! "$tag" =~ RC ]] && echo "--latest" ) --generate-notes --notes-start-tag ${latest}
         env:
           GH_TOKEN: ${{ github.token }}

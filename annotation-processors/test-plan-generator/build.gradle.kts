@@ -32,7 +32,6 @@ dependencies {
     implementation(libs.junit.jupiter)
     implementation(libs.junit.platform.engine)
     implementation(libs.markdown.gen)
-    implementation(libs.plantuml)
 
     testImplementation(libs.assertj)
 }

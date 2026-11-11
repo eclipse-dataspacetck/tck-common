@@ -37,7 +37,7 @@ public abstract class TckGeneratorExtension {
     public abstract Property<String> getGeneratorVersion();
 
     /**
-     * Whether Mermaid/PlantUML diagrams should be converted - and embedded as - images in the Test Plan document.
+     * Whether Mermaid diagrams should be converted - and embedded as - images in the Test Plan document.
      * Note that this may involve remote calls to third-party services!
      * <p>
      * The default is {@code true}

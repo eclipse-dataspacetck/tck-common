@@ -20,7 +20,6 @@ import org.eclipse.dataspacetck.document.model.Category;
 import org.eclipse.dataspacetck.document.model.TestCase;
 import org.eclipse.dataspacetck.document.model.TestSuite;
 import org.eclipse.dataspacetck.rendering.mermaid.MermaidRenderer;
-import org.eclipse.dataspacetck.rendering.plantuml.PlantumlRenderer;
 import org.eclipse.dataspacetck.rendering.spi.TestPlanRenderer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,7 +38,7 @@ import static net.steppschuh.markdowngenerator.Markdown.unorderedList;
 
 /**
  * Renders a {@link org.eclipse.dataspacetck.document.model.TestGraph} and elements within into markdown.
- * This renderer can be configured to either embed Mermaid/Plantuml in the markdown, or to pre-render it to an image first, and
+ * This renderer can be configured to either embed Mermaid in the markdown, or to pre-render it to an image first, and
  * embed the diagram as image. Use the {@link Builder#preRenderImages(boolean)}, {@link Builder#baseFilePath(String)}
  * and {@link Builder#imageType(String)} to control this behaviour.
  */
@@ -98,7 +97,7 @@ public class MarkdownRenderer implements TestPlanRenderer {
         }
         if (preRenderImages) {
             // render an image file first, then reference the image in markdown
-            var imageRenderer = diagramCode.trim().startsWith("@startuml") ? new PlantumlRenderer(imageType) : new MermaidRenderer(imageType);
+            var imageRenderer = new MermaidRenderer(imageType);
             new File(baseFilePath).mkdirs();
 
             var filename = testCase.number() + "." + imageType;
@@ -114,15 +113,8 @@ public class MarkdownRenderer implements TestPlanRenderer {
                     .append(NEWLINE);
 
         } else {
-            // directly embed Mermaid/Plantuml in markdown
-
-            String language;
-            if (diagramCode.trim().startsWith("@startuml")) {
-                language = "plantuml";
-            } else {
-                language = "mermaid";
-            }
-            baseItem.append(codeBlock(diagramCode, language))
+            // directly embed Mermaid in markdown
+            baseItem.append(codeBlock(diagramCode, "mermaid"))
                     .append(NEWLINE);
         }
 

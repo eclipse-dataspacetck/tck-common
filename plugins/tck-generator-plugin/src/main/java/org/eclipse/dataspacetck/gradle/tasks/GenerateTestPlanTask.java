@@ -88,7 +88,7 @@ public abstract class GenerateTestPlanTask extends JavaCompile {
     }
 
     /**
-     * Whether all diagrams (mermaid, plantuml) should be converted to - and embedded as - image, or directly as Mermaid/PlantUML code
+     * Whether all Mermaid diagrams should be converted to - and embedded as - image, or directly as Mermaid code
      */
     @Input
     public boolean getForceConversion() {
@@ -130,7 +130,7 @@ public abstract class GenerateTestPlanTask extends JavaCompile {
         getOptions().getCompilerArgs().addAll(
                 List.of("-processor", TestPlanGenerator.class.getName(),
                         "-Acvf.outputDir=" + outputDirectory, //set output path where testplan.md is stored
-                        "-Acvf.conversion.force=" + forceConversion, // force pre-rendering of mermaid/plantuml diagrams as images (as opposed to: direct embed)
+                        "-Acvf.conversion.force=" + forceConversion, // force pre-rendering of mermaid diagrams as images (as opposed to: direct embed)
                         "-Acvf.conversion.format=" + imageFormat, // image format for pre-rendering
                         "-Acvf.generate=true" // enable. always true.
                 )

@@ -21,7 +21,7 @@ package org.eclipse.dataspacetck.document.model;
  * @param displayName An arbitrary string that describes what is being tested.
  * @param number      A unique number identifying the test within the TCK
  * @param isMandatory Whether the test is mandatory
- * @param diagramCode Formatted PlantUML or Mermaid code to render a diagram
+ * @param diagramCode Formatted Mermaid code to render a diagram
  */
 public record TestCase(String methodName, String displayName, String number, boolean isMandatory, String diagramCode) {
 
